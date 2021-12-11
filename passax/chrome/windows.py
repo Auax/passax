@@ -7,14 +7,16 @@ from pathlib import Path
 from typing import Union
 
 import win32crypt
+from Crypto.Cipher import AES
 
 from passax.chrome.base import ChromeBase
 from passax.exceptions import *
 
 
 class ChromeWindows(ChromeBase):
-    def __init__(self, browser: str = "chrome", verbose: bool = False, ignore_not_found_browsers=False):
-        """ Decryption class for Windows 10.
+    def __init__(self, browser: str = "chrome", verbose: bool = False):
+        """
+        Decryption class for Windows 10.
         Notice that older versions of Windows haven't been tried yet.
         The code will probably not work as expected.
         :param browser: Choose which browser use. Available: "chrome" (default), "opera", and "brave".
@@ -39,16 +41,13 @@ class ChromeWindows(ChromeBase):
         base_path = r"C:\Users\{}\AppData".format(getpass.getuser())
 
         self.browsers_paths = {
-            "chrome": os.path.join(base_path, r"Local\Google\{chrome}\User Data"),
+            "chrome": os.path.join(base_path, r"Local\Google\{chrome}\User Data\Local State"),
             "opera": os.path.join(base_path, r"Roaming\Opera Software\Opera Stable\Local State"),
             "brave": os.path.join(base_path, r"Local\BraveSoftware\Brave-Browser\User Data\Local State")
         }
 
-        if not os.path.exists(self.browsers_paths[self.browser]) and not ignore_not_found_browsers:
-            raise BrowserNotFound
-
         self.browsers_database_paths = {
-            "chrome": os.path.join(base_path, r"Local\Google\{chrome}\User Data"),
+            "chrome": os.path.join(base_path, r"Local\Google\{chrome}\User Data\Default\Login Data"),
             "opera": os.path.join(base_path, r"Roaming\Opera Software\Opera Stable\Login Data"),
             "brave": os.path.join(base_path, r"Local\BraveSoftware\Brave-Browser\User Data\Default\Login Data")
         }
@@ -62,13 +61,13 @@ class ChromeWindows(ChromeBase):
 
             # Fetch all Chrome versions paths
             self._browser_paths = [
-                os.path.join(self.browsers_paths["chrome"].format(chrome=ver), "Local State")
+                self.browsers_paths["chrome"].format(chrome=ver)
                 for ver in chrome_versions if
                 os.path.exists(self.browsers_paths["chrome"].format(chrome=ver))]
 
             # Fetch all database paths
             self._database_paths = [
-                os.path.join(self.browsers_paths["chrome"].format(chrome=ver), r"default\Login Data")
+                self.browsers_database_paths["chrome"].format(chrome=ver)
                 for ver in chrome_versions if
                 os.path.exists(self.browsers_paths["chrome"].format(chrome=ver))]
 
@@ -79,6 +78,28 @@ class ChromeWindows(ChromeBase):
         # Get the AES key
         self.keys = [self.__class__.get_encryption_key(path) for path in self.browser_paths]
         return self.database_paths, self.keys
+
+    @staticmethod
+    def decrypt_windows_password(password, key) -> str:
+        """
+        Input an encrypted password and return a decrypted one.
+        """
+        try:
+            # Get the initialization vector
+            iv = password[3:15]
+            password = password[15:]
+            # Generate cipher
+            cipher = AES.new(key, AES.MODE_GCM, iv)
+            # Decrypt password
+            return cipher.decrypt(password)[:-16].decode()
+
+        except:
+            try:
+                return str(win32crypt.CryptUnprotectData(password, None, None, None, 0)[1])
+
+            except Exception:
+                # Not handled error. Abort execution
+                raise NotImplemented
 
     @property
     def browser_paths(self):
@@ -92,7 +113,6 @@ class ChromeWindows(ChromeBase):
     def get_encryption_key(path: Union[Path, str]):
         """Return the encryptation key of a path
         """
-
         try:
             with open(path, "r", encoding="utf-8") as file:  # Open the "Local State"
                 local_state = file.read()

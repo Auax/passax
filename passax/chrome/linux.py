@@ -11,8 +11,9 @@ from passax.exceptions import *
 class ChromeLinux(ChromeBase):
     """ Decryption class for Chrome in Linux OS """
 
-    def __init__(self, browser: str = "chrome", verbose: bool = False, ignore_not_found_browsers=False):
-        """ Decryption class for Windows 10.
+    def __init__(self, browser: str = "chrome", verbose: bool = False):
+        """
+        Decryption class for Windows 10.
         Notice that older versions of Windows haven't been tried yet.
         The code will probably not work as expected.
         :param browser: Choose which browser use. Available: "chrome" (default), "opera", and "brave".
@@ -37,9 +38,6 @@ class ChromeLinux(ChromeBase):
             "brave": base_path + "/.config/BraveSoftware/Brave-Browser/Default"
         }
 
-        if not os.path.isdir(self.browsers_paths[self.browser]) and not ignore_not_found_browsers:
-            raise BrowserNotFound
-
         self.browsers_database_paths = {
             "chrome": base_path + "/.config/google-chrome/Default/Login Data",
             "opera": base_path + "/.config/opera/Login Data",
@@ -47,7 +45,8 @@ class ChromeLinux(ChromeBase):
         }
 
     def get_linux(self):
-        """Return database paths and keys for Linux
+        """
+        Return database paths and keys for Linux
         """
         passw = 'peanuts'.encode('utf8')  # Set default
         bus = secretstorage.dbus_init()  # New connection to session bus
@@ -59,6 +58,21 @@ class ChromeLinux(ChromeBase):
 
         self.key = KDF.PBKDF2(passw, b'saltysalt', 16, 1)
         return [self.browsers_database_paths[self.browser]], [self.key]
+
+    @staticmethod
+    def decrypt_linux_password(password, key) -> str:
+        """
+        Input an encrypted password and return a decrypted one.
+        Linux method
+        """
+        try:
+            iv = b' ' * 16  # Initialization vector
+            password = password[3:]  # Delete the 3 first chars
+            cipher = AES.new(key, AES.MODE_CBC, IV=iv)  # Create cipher
+            return cipher.decrypt(password).strip().decode('utf8')
+
+        except Exception:
+            raise NotImplemented
 
     @property
     def database_paths(self):

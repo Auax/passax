@@ -46,8 +46,3 @@ class BadOS(Error):
 class BrowserNotImplemented(Error):
     def __init__(self, *args):
         Error.__init__(self, *args)
-
-
-class BrowserNotFound(Error):
-    def __init__(self, *args):
-        Error.__init__(self, *args)

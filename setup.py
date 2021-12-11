@@ -10,7 +10,7 @@ README = (root / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="passax",
-    version="1.0.2",
+    version="1.0.3",
     description="Retrieve saved passwords. Currenly working for Chrome-based Linux & Windows browsers.",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -31,7 +31,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "secretstorage~=3.3.1",
-        'pywin32==301; platform_system == "Windows"',
+        'pywin32==302; platform_system == "Windows"',
         'pycryptodome==3.12.0'
     ],
     entry_points={
