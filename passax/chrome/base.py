@@ -76,8 +76,6 @@ class ChromeBase:
             raise OSNotSupported
 
         try:
-            print(database_paths)
-
             for database_path in database_paths:  # Iterate on each available database
                 # Copy the file to the temp directory as the database will be locked if the browser is running
                 filename = os.path.join(temp_path, "LoginData.db")
@@ -104,7 +102,6 @@ class ChromeBase:
                     date_last_used = row[5]
 
                     key = keys[database_paths.index(database_path)]
-                    print(key)
 
                     # Decrypt password
                     if self.target_os == "Windows":
