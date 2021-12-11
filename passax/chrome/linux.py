@@ -2,6 +2,7 @@ import os
 import platform
 
 import secretstorage
+from Crypto.Cipher import AES
 from Crypto.Protocol import KDF
 
 from passax.chrome.base import ChromeBase
