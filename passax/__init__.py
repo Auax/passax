@@ -4,7 +4,7 @@ Passax Package
 By Ibai Farina
 First package version.
 """
-import passaxs.chrome
+import passax.chrome
 
 __title__ = 'Passax'
 __author__ = 'Ibai Farina'

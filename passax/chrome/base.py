@@ -9,7 +9,7 @@ from typing import Union, Any
 
 from Crypto.Cipher import AES
 
-from passaxs.exceptions import *
+from passax.exceptions import *
 
 if os.name == "nt":
     import win32crypt

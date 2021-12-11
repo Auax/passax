@@ -1,7 +1,7 @@
 import platform
 import unittest
-from passaxs import chrome
-from passaxs.exceptions import *
+from passax import chrome
+from passax.exceptions import *
 
 sys_ = platform.system()
 

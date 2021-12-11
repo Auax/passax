@@ -4,14 +4,14 @@ import platform
 import secretstorage
 from Crypto.Protocol import KDF
 
-from passaxs.chrome.base import ChromeBase
-from passaxs.exceptions import *
+from passax.chrome.base import ChromeBase
+from passax.exceptions import *
 
 
 class ChromeLinux(ChromeBase):
     """ Decryption class for Chrome in Linux OS """
 
-    def __init__(self, browser: str = "chrome", verbose: bool = False):
+    def __init__(self, browser: str = "chrome", verbose: bool = False, ignore_not_found_browsers=False):
         """ Decryption class for Windows 10.
         Notice that older versions of Windows haven't been tried yet.
         The code will probably not work as expected.
@@ -37,7 +37,7 @@ class ChromeLinux(ChromeBase):
             "brave": base_path + "/.config/BraveSoftware/Brave-Browser/Default"
         }
 
-        if not os.path.isdir(self.browsers_paths[self.browser]):
+        if not os.path.isdir(self.browsers_paths[self.browser]) and not ignore_not_found_browsers:
             raise BrowserNotFound
 
         self.browsers_database_paths = {

@@ -8,12 +8,12 @@ from typing import Union
 
 import win32crypt
 
-from passaxs.chrome.base import ChromeBase
-from passaxs.exceptions import *
+from passax.chrome.base import ChromeBase
+from passax.exceptions import *
 
 
 class ChromeWindows(ChromeBase):
-    def __init__(self, browser: str = "chrome", verbose: bool = False):
+    def __init__(self, browser: str = "chrome", verbose: bool = False, ignore_not_found_browsers=False):
         """ Decryption class for Windows 10.
         Notice that older versions of Windows haven't been tried yet.
         The code will probably not work as expected.
@@ -44,7 +44,7 @@ class ChromeWindows(ChromeBase):
             "brave": os.path.join(base_path, r"Local\BraveSoftware\Brave-Browser\User Data\Local State")
         }
 
-        if not os.path.isdir(self.browsers_paths[self.browser]):
+        if not os.path.exists(self.browsers_paths[self.browser]) and not ignore_not_found_browsers:
             raise BrowserNotFound
 
         self.browsers_database_paths = {

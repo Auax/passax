@@ -25,8 +25,9 @@ get data from, but the login data was erased._
 **Print to screen the login info from Chrome.**
 
 ```python
-from passaxs import chrome
+from passax import chrome
 
+# Change to chrome.ChromeLinux for Linux users.
 # Chrome is a handled browser
 windows = chrome.ChromeWindows("chrome")  # Class instance
 windows.get_windows()  # Get database paths and keys
@@ -37,7 +38,7 @@ print(windows.pretty_print())
 **Save data to a file.**
 
 ```python
-from passaxs import chrome
+from passax import chrome
 
 windows = chrome.ChromeWindows("chrome")
 windows.get_windows()
@@ -48,14 +49,17 @@ windows.save("login_data.txt")
 **Save login data from all suported browsers**
 
 ```python
-from passaxs import chrome, handled_browsers
+from passax import chrome
 
-for browser in handled_browsers:
-    windows = chrome.ChromeWindows(browser)
+for browser in chrome.available_browsers:
+    windows = chrome.ChromeWindows(browser, ignore_not_found_browsers=True)
     windows.get_windows()
     windows.retrieve_database()
     windows.save(f"{browser}.txt")
 ```
+
+We use `ignore_not_found_browsers=True`
+because otherwise the function will throw a `BrowserNotFound` error.
 
 ---
 
