@@ -10,7 +10,7 @@
 
 - `secretstorage~=3.3.1`
 - `pywin32==301` _(Only Windows)_
-- `pycryptodome==3.12.01` _(Only Linux)_
+- `pycryptodome==3.12.0` _(Only Linux)_
 
 Notice that these libraries will be automatically installed through the `setup.py`
 file when using `pip install passax`.

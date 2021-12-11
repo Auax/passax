@@ -21,19 +21,6 @@ class TestAll(unittest.TestCase):
         else:
             self.assertRaises(BadOS, lambda: chrome.ChromeLinux(" "))
 
-    def test_get(self):
-        """Check if the get_windows / get_linux methods work properly"""
-        if sys_ == "Linux":
-            r = chrome.ChromeLinux().get_windows()
-            self.assertIsInstance(r, tuple)
-
-        elif sys_ == "Windows":
-            r = chrome.ChromeWindows().get_windows()
-            self.assertIsInstance(r, tuple)
-
-        else:
-            self.fail()
-
 
 if __name__ == '__main__':
     unittest.main()

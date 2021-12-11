@@ -16,14 +16,14 @@ if os.name == "nt":
 
 
 class ChromeBase:
+    available_browsers = ["chrome", "opera", "brave"]
+
     def __init__(self, verbose: bool = False):
         """
         Main Chrome-based browser class.
         :param verbose: print output
         """
-
         self.verbose = verbose  # Set whether print the values or not
-        self.available_browsers = ["chrome", "opera", "brave"]
         self.values = []
 
         #  Determine which platform you are on

@@ -44,6 +44,9 @@ class ChromeWindows(ChromeBase):
             "brave": os.path.join(base_path, r"Local\BraveSoftware\Brave-Browser\User Data\Local State")
         }
 
+        if not os.path.isdir(self.browsers_paths[self.browser]):
+            raise BrowserNotFound
+
         self.browsers_database_paths = {
             "chrome": os.path.join(base_path, r"Local\Google\{chrome}\User Data"),
             "opera": os.path.join(base_path, r"Roaming\Opera Software\Opera Stable\Login Data"),
