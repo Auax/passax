@@ -59,7 +59,7 @@ for browser in chrome.available_browsers:
 ```
 
 We use `ignore_not_found_browsers=True`
-because otherwise the function will throw a `BrowserNotFound` error.
+because otherwise, the function will throw a `BrowserNotFound` error.
 
 ---
 
