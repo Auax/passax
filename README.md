@@ -17,6 +17,13 @@ file when using `pip install passax`.
 
 ---
 
+## Suported Systems
+Passax **v-1.10** now includes:
+- MacOS (Only tried in Monterrey)
+- Windows (Only tried in Win-10)
+- Linux (Tried on Ubuntu / Kali Linux)
+
+---
 ## Usage
 
 _Notice that sometimes you might get a blank output, this can be because you had installed the browser you're trying to

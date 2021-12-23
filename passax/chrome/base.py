@@ -14,13 +14,16 @@ from passax.exceptions import *
 
 class ChromeBase:
     available_browsers = ["chrome", "opera", "brave"]
+    google_chrome_versions = ['chrome', 'chrome dev', 'chrome beta', 'chrome canary']
 
-    def __init__(self, verbose: bool = False):
+    def __init__(self, verbose: bool = False, blank_passwords: bool = True):
         """
         Main Chrome-based browser class.
         :param verbose: print output
+        :param blank_passwords: whether to save or not blank password fields
         """
         self.verbose = verbose  # Set whether print the values or not
+        self.blank_passwords = blank_passwords
         self.values = []
 
         #  Determine which platform you are on
@@ -33,47 +36,67 @@ class ChromeBase:
         Since `chromedate` is formatted as the number of microseconds since January, 1601"""
         return datetime(1601, 1, 1) + timedelta(microseconds=chromedate)
 
-    def get_windows(self):
+    @staticmethod
+    def get(func):
         """
-        Override function for this Windows method
+        Update paths with the Chrome versions
+        Will change protected members from child class.
         """
-        pass
+        def wrapper(*args):
+            if args[0].browser == "chrome":
+                # Accessing protected member to update the paths.
 
-    def get_linux(self):
-        """
-        Override function for this Linux method
-        """
-        pass
+                # Fetch all Chrome versions paths
+                args[0]._browser_paths = [
+                    args[0].browsers_paths["chrome"].format(chrome=ver)
+                    for ver in ChromeBase.google_chrome_versions if
+                    os.path.exists(args[0].browsers_paths["chrome"].format(chrome=ver))]
+
+                # Fetch all database paths
+                args[0]._database_paths = [
+                    args[0].browsers_database_paths["chrome"].format(chrome=ver)
+                    for ver in ChromeBase.google_chrome_versions if
+                    os.path.exists(args[0].browsers_paths["chrome"].format(chrome=ver))]
+
+            else:
+                args[0]._browser_paths = [args[0].browsers_paths[args[0].browser]]
+                args[0]._database_paths = [args[0].browsers_database_paths[args[0].browser]]
+
+            return func(*args)
+
+        return wrapper
 
     @staticmethod
-    def decrypt_windows_password(password, key) -> str:
+    def decrypt_windows_password(password: bytes, key: bytes):
         """
-        Override function for this Windows method.
-        Input an encrypted password and return a decrypted one.
+        Decrypt Windows Chrome password
+        Override this method.
         """
 
     @staticmethod
-    def decrypt_linux_password(password, key) -> str:
+    def decrypt_unix_password(password: bytes, key: bytes) -> str:
         """
-        Override function for this Linux method.
-        Input an encrypted password and return a decrypted one.
-        Linux method
+        Decrypt Unix Chrome password
+        Salt: The salt is ‘saltysalt’ (constant)
+        Iterations: 1003(constant) for symmetric key derivation in macOS. 1 iteration in Linux.
+        IV: 16 spaces.
         """
+        try:
+            iv = b' ' * 16  # Initialization vector
+            password = password[3:]  # Delete the 3 first chars
+            cipher = AES.new(key, AES.MODE_CBC, IV=iv)  # Create cipher
+            return cipher.decrypt(password).strip().decode('utf8')
+
+        except Exception:
+            raise NotImplemented
 
     def retrieve_database(self) -> list:
         """
         Retrieve all the information from the databases with encrypted values.
         """
-        if self.target_os == "Windows":
-            temp_path = r"C:\Users\{}\AppData\Local\Temp".format(getpass.getuser())
-            database_paths, keys = self.get_windows()
-
-        elif self.target_os == "Linux":
-            temp_path = "/tmp"
-            database_paths, keys = self.get_linux()
-
-        else:
-            raise OSNotSupported
+        temp_path = r"C:\Users\{}\AppData\Local\Temp".format(
+            getpass.getuser()) if self.target_os == "Windows" else "/tmp"
+        database_paths, keys = self.database_paths, self.keys
 
         try:
             for database_path in database_paths:  # Iterate on each available database
@@ -107,11 +130,14 @@ class ChromeBase:
                     if self.target_os == "Windows":
                         password = self.decrypt_windows_password(encrypted_password, key)
 
-                    elif self.target_os == "Linux":
-                        password = self.decrypt_linux_password(encrypted_password, key)
+                    elif self.target_os == "Linux" or self.target_os == "Darwin":
+                        password = self.decrypt_unix_password(encrypted_password, key)
 
                     else:
                         password = ""
+
+                    if password == "" and not self.blank_passwords:
+                        continue
 
                     if date_created and date_created != 86400000000:
                         creation_time = str(self.__class__.get_datetime(date_created))

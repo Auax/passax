@@ -14,7 +14,7 @@ from passax.exceptions import *
 
 
 class ChromeWindows(ChromeBase):
-    def __init__(self, browser: str = "chrome", verbose: bool = False):
+    def __init__(self, browser: str = "chrome", verbose: bool = False, blank_passwords: bool = False):
         """
         Decryption class for Windows 10.
         Notice that older versions of Windows haven't been tried yet.
@@ -23,7 +23,7 @@ class ChromeWindows(ChromeBase):
         :param verbose: print output
         """
 
-        super(ChromeWindows, self).__init__(verbose)
+        super(ChromeWindows, self).__init__(verbose, blank_passwords)
 
         if platform.system() != "Windows":
             raise BadOS("Use your system's OS")
@@ -31,7 +31,6 @@ class ChromeWindows(ChromeBase):
         if not browser.lower() in self.available_browsers:
             raise BrowserNotImplemented
 
-        self.username = getpass.getuser()
         self.browser = browser.lower()
 
         self._browser_paths = []
@@ -52,35 +51,24 @@ class ChromeWindows(ChromeBase):
             "brave": os.path.join(base_path, r"Local\BraveSoftware\Brave-Browser\User Data\Default\Login Data")
         }
 
+    @property
+    def browser_paths(self):
+        return self._browser_paths
+
+    @property
+    def database_paths(self):
+        return self._database_paths
+
+    @ChromeBase.get
     def get_windows(self):
         """Return database paths and keys for Windows
         """
-
-        if self.browser == "chrome":
-            chrome_versions = ['chrome', 'chrome dev', 'chrome beta', 'chrome canary']
-
-            # Fetch all Chrome versions paths
-            self._browser_paths = [
-                self.browsers_paths["chrome"].format(chrome=ver)
-                for ver in chrome_versions if
-                os.path.exists(self.browsers_paths["chrome"].format(chrome=ver))]
-
-            # Fetch all database paths
-            self._database_paths = [
-                self.browsers_database_paths["chrome"].format(chrome=ver)
-                for ver in chrome_versions if
-                os.path.exists(self.browsers_paths["chrome"].format(chrome=ver))]
-
-        else:
-            self._browser_paths = [self.browsers_paths[self.browser]]
-            self._database_paths = [self.browsers_database_paths[self.browser]]
-
         # Get the AES key
         self.keys = [self.__class__.get_encryption_key(path) for path in self.browser_paths]
         return self.database_paths, self.keys
 
     @staticmethod
-    def decrypt_windows_password(password, key) -> str:
+    def decrypt_windows_password(password: bytes, key: bytes) -> str:
         """
         Input an encrypted password and return a decrypted one.
         """
@@ -100,14 +88,6 @@ class ChromeWindows(ChromeBase):
             except Exception:
                 # Not handled error. Abort execution
                 raise NotImplemented
-
-    @property
-    def browser_paths(self):
-        return self._browser_paths
-
-    @property
-    def database_paths(self):
-        return self._database_paths
 
     @staticmethod
     def get_encryption_key(path: Union[Path, str]):
