@@ -11,7 +11,7 @@ from passax.chrome.base import ChromeBase
 from passax.exceptions import *
 
 
-class ChromeLinux(ChromeBase):
+class Chrome(ChromeBase):
     """ Decryption class for Chrome in Linux OS """
 
     def __init__(self,
@@ -25,7 +25,7 @@ class ChromeLinux(ChromeBase):
         :param blank_passwords: save or not blank passwords
         """
 
-        super(ChromeLinux, self).__init__(verbose, blank_passwords)
+        super(Chrome, self).__init__(verbose, blank_passwords)
 
         if platform.system() != "Linux":
             raise BadOS("Use a Linux system for this class.")

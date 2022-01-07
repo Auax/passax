@@ -10,7 +10,7 @@ from passax.chrome.base import ChromeBase
 from passax.exceptions import *
 
 
-class ChromeMacOS(ChromeBase):
+class Chrome(ChromeBase):
     """ Decryption class for Chrome in MacOS """
 
     def __init__(self, browser: str = "chrome", verbose: bool = False, blank_passwords: bool = False):
@@ -20,7 +20,7 @@ class ChromeMacOS(ChromeBase):
         :param verbose: print output
         """
 
-        super(ChromeMacOS, self).__init__(verbose, blank_passwords)
+        super(Chrome, self).__init__(verbose, blank_passwords)
 
         if platform.system() != "Darwin":
             raise BadOS("Use your system's OS")

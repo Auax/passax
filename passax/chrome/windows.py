@@ -15,7 +15,7 @@ from passax.chrome.base import ChromeBase
 from passax.exceptions import *
 
 
-class ChromeWindows(ChromeBase):
+class Chrome(ChromeBase):
     def __init__(self,
                  browser: Type[BrowserVersion] = browsers.Chrome,
                  verbose: bool = False,
@@ -29,7 +29,7 @@ class ChromeWindows(ChromeBase):
         :param blank_passwords: save or not blank passwords
         """
 
-        super(ChromeWindows, self).__init__(verbose, blank_passwords)
+        super(Chrome, self).__init__(verbose, blank_passwords)
 
         if platform.system() != "Windows":
             raise BadOS("Use a Windows system for this class.")

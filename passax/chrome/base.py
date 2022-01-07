@@ -13,9 +13,6 @@ from passax.exceptions import *
 
 
 class ChromeBase:
-    available_browsers = ["chrome", "opera", "brave"]
-    google_chrome_versions = ['chrome', 'chrome dev', 'chrome beta', 'chrome canary']
-
     def __init__(self, verbose: bool = False, blank_passwords: bool = True):
         """
         Main Chrome-based browser class.
