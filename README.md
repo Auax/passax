@@ -37,7 +37,7 @@ from passax import chrome
 # Change to chrome.ChromeLinux for Linux users.
 # Chrome is a handled browser
 windows = chrome.ChromeWindows("chrome")  # Class instance
-windows.get_windows()  # Get database paths and keys
+windows.fetch()  # Get database paths and keys
 windows.retrieve_database()  # Get the data from the database
 print(windows.pretty_print())
 ```
@@ -48,7 +48,7 @@ print(windows.pretty_print())
 from passax import chrome
 
 windows = chrome.ChromeWindows("chrome")
-windows.get_windows()
+windows.fetch()
 windows.retrieve_database()
 windows.save("login_data.txt")
 ```
@@ -60,7 +60,7 @@ from passax import chrome
 
 for browser in chrome.available_browsers:
     windows = chrome.ChromeWindows(browser)
-    windows.get_windows()
+    windows.fetch()
     windows.retrieve_database()
     windows.save(f"{browser}.txt")
 ```
