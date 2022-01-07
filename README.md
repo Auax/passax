@@ -100,6 +100,12 @@ for browser in browsers.available_browsers:
 ```
 
 ---
+## To do
+* Update / fix the test file
+* Add macOS browsers
+* Maybe add other browsers not based on Chromium (Firefox for example).
+
+---
 
 ## Contact
 
