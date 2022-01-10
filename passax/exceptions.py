@@ -51,3 +51,8 @@ class BrowserNotImplemented(Error):
 class MacOSKeychainAccessError(Error):
     def __init__(self, *args):
         Error.__init__(self, *args)
+
+
+class LinuxSafeStorageError(Error):
+    def __init__(self, *args):
+        Error.__init__(self, *args)

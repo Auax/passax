@@ -42,8 +42,8 @@ class Chrome(ChromeBase):
         base_path = os.getenv('HOME')
 
         self.browsers_paths = {
-            "chrome": base_path + "/.config/{ver}/Default/",
-            "opera": base_path + "/.config/{ver}/",
+            "chrome": base_path + "/.config/{ver}/Default",
+            "opera": base_path + "/.config/{ver}",
             "brave": base_path + "/.config/BraveSoftware/{ver}/Default"
         }
         self.browsers_database_paths = {
@@ -51,6 +51,10 @@ class Chrome(ChromeBase):
             "opera": base_path + "/.config/{ver}/Login Data",
             "brave": base_path + "/.config/BraveSoftware/{ver}/Default/Login Data"
         }
+
+    @property
+    def browser_paths(self):
+        return self._browser_paths
 
     @property
     def database_paths(self):
@@ -63,17 +67,20 @@ class Chrome(ChromeBase):
         Return database paths and keys for Linux
         """
 
-        # TODO: CHECK IF ALL BROWSERS SHARE THE SAME SECRETSTORAGE KEY
-        self.keys.append(self.get_encryption_key())
+        key = self.get_encryption_key()
+
+        if not key:
+            raise LinuxSafeStorageError("Error retrieving the password in Safe Storage.")
+
+        self.keys.append(key)
         return self.database_paths, self.keys
 
     def get_encryption_key(self):
         """
-        Return the encryption key for Chrome
+        Return the encryption key for the browser
         """
-        label = "Chrome Safe Storage" # Default
-
-        # Chromium browsers have a different safe storage label
+        label = "Chrome Safe Storage"  # Default
+        # Some browsers have a different safe storage label
         if self.browser == "opera":
             label = "Chromium Safe Storage"
         elif self.browser == "brave":

@@ -1,5 +1,9 @@
 class BrowserVersion:
-    """Simple global class"""
+    """
+    Simple global class
+    Note: self.base_name is defined in the child classes
+    """
+
     def __str__(self) -> str:
         return self.base_name
 
