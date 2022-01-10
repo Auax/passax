@@ -10,7 +10,7 @@ README = (root / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="passax",
-    version="1.20",
+    version="1.21",
     description="Retrieve saved passwords. Currenly working for Chrome-based Linux & Windows browsers.",
     long_description=README,
     long_description_content_type="text/markdown",

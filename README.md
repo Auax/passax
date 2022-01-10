@@ -19,7 +19,7 @@ file when using `pip install passax`.
 
 ## Suported Systems
 
-Passax **v-1.20** now includes:
+Passax **v-1.10** now includes:
 
 - MacOS (Only tried in Monterrey)
 - Windows (Only tried in Win-10)
