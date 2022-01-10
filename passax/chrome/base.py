@@ -13,13 +13,15 @@ from passax.exceptions import *
 
 
 class ChromeBase:
-    def __init__(self, verbose: bool = False, blank_passwords: bool = True):
+    def __init__(self,
+                 verbose: bool = False,
+                 blank_passwords: bool = True):
         """
         Main Chrome-based browser class.
         :param verbose: print output
         :param blank_passwords: whether to save or not blank password fields
         """
-        self.verbose = verbose  # Set whether print the values or not
+        self.verbose = verbose
         self.blank_passwords = blank_passwords
         self.values = []
 
@@ -41,7 +43,6 @@ class ChromeBase:
         """
 
         def wrapper(*args):
-
             cls = args[0]
             sys_ = platform.system()
             base_name = cls.browser.base_name
@@ -49,14 +50,7 @@ class ChromeBase:
             # Get versions
             versions = None
 
-            # match sys_:
-            #     case "Windows":
-            #         versions = cls.browser.versions_win
-            #     case "Linux":
-            #         versions = cls.browser.versions_linux
-            #     case "Darwin":
-            #         versions = cls.browser.versions_mac
-
+            # Assign the versions
             if sys_ == "Windows":
                 versions = cls.browser.versions_win
             elif sys_ == "Linux":
@@ -82,6 +76,8 @@ class ChromeBase:
         """
         Decrypt Windows Chrome password
         Override this method.
+        Declared in Windows class because this method
+        uses a library only available in Windows.
         """
 
     @staticmethod
@@ -172,7 +168,7 @@ class ChromeBase:
                             print("Password: \t{}".format(password))
                             print("Creation date: \t{}".format(creation_time))
                             print("Last Used: \t{}".format(last_time_used))
-                            print('_' * 75)
+                            print('-' * 50)
 
                 # Close connection to the database
                 cursor.close()  # Close cursor
@@ -213,11 +209,25 @@ class ChromeBase:
             o += '-' * 50 + '\n'
         return o
 
-    def save(self, filename: Union[Path, str]) -> None:
+    def save(self, filename: Union[Path, str], blank_file: bool = False, verbose: bool = True) -> bool:
         """
         Save all the values to a desired path
         :param filename: the filename (including the path to dst)
-        :return: None
+        :param blank_file: save file if no content is returned
+        :param verbose: print output
+        :return: bool
         """
         with open(filename, 'w') as file:
-            file.write(self.pretty_print())
+            content = self.pretty_print()
+
+            if not blank_file:
+                if content:
+                    file.write(content)
+                    return True
+                if verbose:
+                    print(f"No content for '{filename}'")
+                return False
+
+            else:
+                file.write(content)
+                return True

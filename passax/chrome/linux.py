@@ -1,6 +1,6 @@
 import os
 import platform
-from typing import Type
+from typing import Type, Union
 
 import secretstorage
 from Crypto.Protocol.KDF import PBKDF2
@@ -75,7 +75,7 @@ class Chrome(ChromeBase):
         self.keys.append(key)
         return self.database_paths, self.keys
 
-    def get_encryption_key(self):
+    def get_encryption_key(self) -> bytes:
         """
         Return the encryption key for the browser
         """
