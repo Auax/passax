@@ -217,17 +217,20 @@ class ChromeBase:
         :param verbose: print output
         :return: bool
         """
-        with open(filename, 'w') as file:
-            content = self.pretty_print()
+        content = self.pretty_print()
 
-            if not blank_file:
-                if content:
-                    file.write(content)
-                    return True
-                if verbose:
-                    print(f"No content for '{filename}'")
-                return False
-
-            else:
+        if blank_file:
+            with open(filename, 'w') as file:
                 file.write(content)
                 return True
+
+        else:
+            if content:
+                print(True)
+                with open(filename, 'w') as file:
+                    file.write(content)
+                return True
+
+            if verbose:
+                print(f"No content for '{filename}'")
+            return False
