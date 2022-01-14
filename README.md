@@ -17,11 +17,11 @@ file when using `pip install passax`.
 
 ---
 
-## Suported Systems
+## Supported Systems
 
 Passax **v-1.10** now includes:
 
-- MacOS (Only tried in Monterrey)
+- macOS (Only tried in Monterrey)
 - Windows (Only tried in Win-10)
 - Linux (Tried on Ubuntu / Kali Linux)
 
@@ -58,7 +58,7 @@ win.retrieve_database()
 win.save("login_data.txt", blank_file=False, verbose=True)
 ```
 
-**Save login data from all suported browsers**
+**Save login data from all supported browsers.**
 
 ```python
 from passax.chrome import windows, browsers
@@ -71,7 +71,7 @@ for browser in browsers.available_browsers:
 ```
 
 **Run in any supported OS** (Note that macOS will not work because I need to include the browsers. This will come with
-the next update)
+the next update).
 
 ```python
 import platform
