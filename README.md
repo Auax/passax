@@ -70,8 +70,7 @@ for browser in browsers.available_browsers:
     win.save(f"{browser.base_name}_data.txt", blank_file=False, verbose=True)  # Save the file
 ```
 
-**Run in any supported OS** (Note that macOS will not work because I need to include the browsers. This will come with
-the next update).
+**Run in any supported OS.**
 
 ```python
 import platform
