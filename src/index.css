@@ -1,13 +1,113 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+p, h1, h2, h3, h4, button, a {
+    font-family: 'Inter', sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+    z-index: 1;
+}
+
+@layer components {
+    .btn-primary {
+        @apply py-2 px-4 mx-1
+        bg-blue-600
+        text-white font-semibold
+        border-blue-600
+        rounded-sm
+        shadow-md
+        hover:bg-blue-700
+        focus:ring-2
+        focus:ring-blue-400
+        focus:ring-opacity-75
+        hover:border-blue-600;
+    }
+
+    .navbar-link {
+        @apply block
+        py-2 pr-4 pl-3 mb-1
+        text-stone-800
+        bg-blue-700/10
+        md:mb-0
+        md:bg-transparent
+        md:text-blue-700
+        md:p-0
+        dark:text-white
+        hover:text-blue-900
+        dark:hover:text-stone-200
+        transition ease-in-out duration-75
+    }
+
+    .hero-dark {
+        @apply bg-gradient-to-br
+        dark:from-slate-900/20 dark:to-c-gray/60 
+        drop-shadow-lg
+    }
+
+    .hero-light {
+        @apply bg-gradient-to-br 
+        from-sky-300 to-slate-300 
+        drop-shadow-sm
+    }
+
+}
+
+
+.Home {
+    background-image: url("assets/images/square_bg.png");
+    background-repeat: repeat;
+    background-size: 30px;
+}
+
+.bg {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    background-image: url("assets/images/bg.jpg");
+    background-size: cover;
+    filter: blur(2px);
+    z-index: 0;
+    opacity: 4%;
+
+}
+
+.h-screen-offset {
+    height: calc(100vh - 168px);
+}
+
+.code-snippet > pre::-webkit-scrollbar {
+    height: 13px;
+}
+
+.code-snippet > pre::-webkit-scrollbar-track {
+    margin: 10px;
+}
+
+.code-snippet > pre::-webkit-scrollbar-thumb {
+    background-color: rgba(73, 73, 73, 0.7);
+    border-radius: 20px;
+    border: 4px solid #15181f;
+}
+
+.code-snippet > pre::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(73, 73, 73, 0.9);
+}
+
+.code-snippet > pre {
+    border-radius: 10px;
+    padding: 20px !important;
+}
+
+
+.copy-btn {
+    position: absolute;
+    margin-top: 10px;
+    right: 0;
+    padding-right: 3rem;
+}
+
+.copy-btn div {
+    background-color: #191919;
 }
