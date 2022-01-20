@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/passax/static/css/main.3fa4c639.css",
+    "main.js": "/passax/static/js/main.8438ae32.js",
+    "static/js/787.c88025dd.chunk.js": "/passax/static/js/787.c88025dd.chunk.js",
+    "static/media/bg.jpg": "/passax/static/media/bg.a821ecdb37b1391c212e.jpg",
+    "index.html": "/passax/index.html",
+    "main.3fa4c639.css.map": "/passax/static/css/main.3fa4c639.css.map",
+    "main.8438ae32.js.map": "/passax/static/js/main.8438ae32.js.map",
+    "787.c88025dd.chunk.js.map": "/passax/static/js/787.c88025dd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3fa4c639.css",
+    "static/js/main.8438ae32.js"
+  ]
+}
